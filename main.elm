@@ -10,9 +10,7 @@ import Window
 
 type alias Model =
   { x : Float
-  , y : Float
   , vx : Float
-  , vy : Float
   , dir : Direction
   }
 
@@ -24,13 +22,14 @@ type alias Keys = { x:Int, y:Int }
 
 chad : Model
 chad =
-  { x = 0
-  , y = 0
+  { x = -300
   , vx = 0
-  , vy = 0
   , dir = Right
   }
 
+
+bound : Float
+bound = 75
 
 -- UPDATE
 
@@ -44,7 +43,7 @@ movement : Float -> Model -> Model
 movement dt chad =
   let
     vx' = 
-      if chad.x < 250 then
+      if chad.x < bound then
         dt * chad.vx * 5
       else
         0
@@ -80,52 +79,64 @@ view (w',h') chad =
     skinColor =
       rgb 252 162 132
 
+    nothing =
+      rect 1 1
+      |> filled (rgb 23 92 254)
+
     chadImage =
-      rect 4 12
-      |> filled skinColor
+      image 136 168 "chad.png"
+      |> toForm
 
     chadSign =
-      image 42 55 "./chad-sign.png"
+      if chad.x < bound then
+        image 42 55 "./chad-sign.png"
+        |> toForm
+      else
+        nothing
 
     jasperImage =
-      rect 4 12
-      |> filled skinColor
+      image 124 160 "./jasper.png"
+      |> toForm
 
-    groundY = 50 - h/2
 
-    position =
-      (chad.x, chad.y + groundY)
+
+    jasperSign = 
+      if chad.x < bound then
+        image 79 71 "./jasper-sign.png"
+        |> toForm
+      else
+        nothing
 
     signImage = 
-      if chad.x < 250 then
-        rect 100 20
-        |> filled (rgb 256 0 0)
+      if chad.x < bound then
+        nothing
       else
-        rect 100 20
-        |> filled (rgb 256 256 0)   
+        image 1254 262 "./birthday-sign.png"
+        |> toForm 
+
+    birthdaySignPos =
+      (-20, 500 - h/2)
+
 
   in
     collage w' h'
       [ rect w h
-          --           # 17 5C FE
-          |> filled (rgb 23 92 254)
-
-      , rect w 50
-          |> filled (rgb 100 117 90)
-          |> move (0, 24 - h/2)
+        |> filled (rgb 23 92 254)
 
       , chadImage
-          |> move position
+        |> move (chad.x, 80 - h/2)
 
-      --, chadSign
-      --    |> toForm
-      --    |> move (0, 104 - h/2)
+      , chadSign
+        |> move (chad.x + 10, 200 - h/2)
 
       , jasperImage
-          |> move (300, 50 - h/2)
+        |> move (300, 80 - h/2)
+
+      , jasperSign 
+        |> move (295, 200 - h/2)
 
       , signImage
-          |> move (250, 300 - h/2)
+        |> move birthdaySignPos
       ]
 
 
