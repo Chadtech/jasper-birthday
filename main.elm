@@ -60,10 +60,7 @@ walk keys chad =
       vx = toFloat keys.x,
       dir =
         if keys.x < 0 then
-          if chad.x < 250 then
             Left
-          else
-            chad.dir
 
         else if keys.x > 0 then
             Right
@@ -126,7 +123,7 @@ view (w',h') chad =
 
       , jasperImage
           |> move (300, 50 - h/2)
-          
+
       , signImage
           |> move (250, 300 - h/2)
       ]
@@ -145,3 +142,5 @@ input =
     delta = Signal.map (\t -> t/20) (fps 30)
   in
     Signal.sampleOn delta (Signal.map2 (,) delta Keyboard.arrows)
+
+
