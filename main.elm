@@ -9,35 +9,41 @@ import Window
 -- MODEL
 
 type alias Model =
-  { x : Float
+  { x  : Float
   , vx : Float
-  , dir : Direction
   }
-
-
-type Direction = Left | Right
 
 type alias Keys = { x:Int, y:Int }
 
 
 chad : Model
 chad =
-  { x = -300
-  , vx = 0
-  , dir = Right
+  { x   = -400
+  , vx  = 0
   }
 
 
 bound : Float
 bound = 75
 
+
+-- UTIL
+
+url : String
+url = "https://raw.githubusercontent.com/Chadtech/jasper-birthday/master/"
+
+sourcer : String -> String
+sourcer i =
+  url ++ "/" ++ i
+
+
 -- UPDATE
 
 update : (Float, Keys) -> Model -> Model
 update (dt, keys) chad =
   chad
-    |> walk keys
-    |> movement dt
+  |> walk keys
+  |> movement dt
 
 movement : Float -> Model -> Model
 movement dt chad =
@@ -56,16 +62,7 @@ movement dt chad =
 walk : Keys -> Model -> Model
 walk keys chad =
   { chad |
-      vx = toFloat keys.x,
-      dir =
-        if keys.x < 0 then
-            Left
-
-        else if keys.x > 0 then
-            Right
-
-        else
-            chad.dir
+      vx = toFloat keys.x
   }
 
 
@@ -81,28 +78,38 @@ view (w',h') chad =
 
     nothing =
       rect 1 1
-      |> filled (rgb 23 92 254)
+      |> bluer
+
+    bluer = 
+      filled 
+      <| (rgb 23 92 254)
 
     chadImage =
-      image 136 168 "chad.png"
+      "chad.png"
+      |> sourcer
+      |> image 136 168
       |> toForm
 
     chadSign =
       if chad.x < bound then
-        image 42 55 "./chad-sign.png"
+        "chad-sign.png"
+        |> sourcer
+        |> image 42 55
         |> toForm
       else
         nothing
 
     jasperImage =
-      image 124 160 "./jasper.png"
+      "jasper.png"
+      |> sourcer
+      |> image 124 160
       |> toForm
-
-
 
     jasperSign = 
       if chad.x < bound then
-        image 79 71 "./jasper-sign.png"
+        "jasper-sign.png"
+        |> sourcer
+        |> image 79 71
         |> toForm
       else
         nothing
@@ -111,17 +118,15 @@ view (w',h') chad =
       if chad.x < bound then
         nothing
       else
-        image 1254 262 "./birthday-sign.png"
+        "birthday-sign.png"
+        |> sourcer
+        |> image 1254 262
         |> toForm 
-
-    birthdaySignPos =
-      (-20, 500 - h/2)
-
 
   in
     collage w' h'
       [ rect w h
-        |> filled (rgb 23 92 254)
+        |> bluer
 
       , chadImage
         |> move (chad.x, 80 - h/2)
@@ -136,7 +141,7 @@ view (w',h') chad =
         |> move (295, 200 - h/2)
 
       , signImage
-        |> move birthdaySignPos
+        |> move (-20, 500 - h/2)
       ]
 
 
